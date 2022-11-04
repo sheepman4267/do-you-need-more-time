@@ -14,7 +14,7 @@ parser.add_argument('--message', type=str, help='Message to be displayed', defau
 args = parser.parse_args()
 
 def main():
-    if is_idle():
+    if is_idle(args.timeout_command):
         clock.schedule_interval(countdown, 1)
         pyglet.app.run()
     else:
