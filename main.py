@@ -14,9 +14,11 @@ parser.add_argument('--message', type=str, help='Message to be displayed', defau
 args = parser.parse_args()
 
 def main():
-    is_idle()
-    clock.schedule_interval(countdown, 1)
-    pyglet.app.run()
+    if is_idle():
+        clock.schedule_interval(countdown, 1)
+        pyglet.app.run()
+    else:
+        print('Kiosk is not idle. Exiting.')
 
 window = pyglet.window.Window()
 announcement_label = pyglet.text.Label(
@@ -45,14 +47,14 @@ def on_draw():
     announcement_label.draw()
     countdown_label.draw()
 
-def is_idle():
-    idletime = subprocess.check_output('xprintidle')
-    print(idletime)
-
+def is_idle(timeout:int):
+    idletime = int(subprocess.check_output('xprintidle')) / 1000 #Get idle time from xprintidle, convert it to seconds
+    if idletime <= timeout:
+        return False
+    elif idletime > timeout * 2:
+        return False
+    else:
+        return True
 
 if __name__ == '__main__':
     main()
-
-
-def test_func():
-    print()
